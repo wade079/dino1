@@ -3,7 +3,7 @@ import acm.graphics.GImage;
 import acm.program.GraphicsProgram;
 
 public class dino extends GraphicsProgram {
-    private final String path_image = "C:\\Users\\wade079\\Desktop\\dino1\\img\\";//Directorio de las imagenes
+    private final String path_image = "C:\\Users\\wade079\\Desktop\\dino\\img\\";//Directorio de las imagenes
 
     public static void main(String[] args) {//main
         new dino().start(args);
