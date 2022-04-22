@@ -1,17 +1,24 @@
 package com.company;
 
-import acm.util.SoundClip;
-import acm.graphics.*;
+import acm.graphics.GLabel;
+
 import acm.program.GraphicsProgram;
+import acm.util.SoundClip;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class PointSound extends GraphicsProgram implements KeyListener {
 
     private final String path_music = "C:\\Users\\wade079\\Desktop\\dino\\music\\";//Directorio de las pistas de audio
+    private final String path_puntos = "C:\\Users\\wade079\\Desktop\\dino\\puntos\\";//Directorio de las pistas de audio
 
     private boolean jump = false;
     private boolean crouch = false;
@@ -61,6 +68,7 @@ public class PointSound extends GraphicsProgram implements KeyListener {
 
         addKeyListeners();
 
+
         //Seccion contadores y puntos * Paul *
 
         boolean forest = true;//run forest RUN!!
@@ -105,9 +113,10 @@ public class PointSound extends GraphicsProgram implements KeyListener {
         clouds.add(new Cloud());
         add(clouds.get(0).getCloud(), clouds.get(0).getPos_x(), clouds.get(0).getPos_y());
 
-        dora.setVolume(0.1);
+        dora.setVolume(0.5);
         dora.loop();
 
+        int colision = 0;
         while (forest) {
 
             try {
@@ -150,6 +159,7 @@ public class PointSound extends GraphicsProgram implements KeyListener {
                 puntos++;
                 ciclos_puntos = 0;
                 ciclos_sonido++;
+
             }
 
             if (ciclos_sonido >= 100) {//Cada cuantos puntos tiene que sonar
@@ -206,10 +216,10 @@ public class PointSound extends GraphicsProgram implements KeyListener {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                dora.setVolume(0.1);
+                dora.setVolume(0.5);
                 dora.play();
             }
-            dora.setVolume(0.1);
+            dora.setVolume(0.5);
 
             if (cont_cactus == velocidad_fondo) {
                 add(caclist.get(0).getimg(), caclist.get(0).getPosx(), caclist.get(0).getPosy());
@@ -237,6 +247,8 @@ public class PointSound extends GraphicsProgram implements KeyListener {
                 if (caclist.get(0).crash(dino.get(0).getPos_y())) {
                     System.out.println("punto colision");
                     forest = false;
+                    colision = colision + 1;
+                    crear_file();
                 }
             }
 
@@ -251,6 +263,8 @@ public class PointSound extends GraphicsProgram implements KeyListener {
                 velocidad_fondo = 1;
                 System.out.println("aceleracion");
             }
+
+
         }//fin  while
 
         caclist.add(new Cactusito());
@@ -269,11 +283,92 @@ public class PointSound extends GraphicsProgram implements KeyListener {
         }
 
         dino.get(0).getSprite().setVisible(false);
-        run();
 
-    }//fin run
+
+        try {
+            FileWriter myWriter = new FileWriter(path_puntos + "puntos.txt");
+            myWriter.write(String.valueOf(puntos));
+            myWriter.close();
+            System.out.println("Successfully wrote to the file.");
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+
+        if (colision == 1) {
+            puntos_anterior_max();
+            try {
+                Thread.sleep(5500);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+
+
+            run();
+
+
+        }
+    }
+
+    private void crear_file() {
+        try {
+            File myObj = new File(path_puntos + "puntos.txt");
+            if (myObj.createNewFile()) {
+                System.out.println("File created: " + myObj.getName());
+            } else {
+                System.out.println("File already exists.");
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+
+    }
+
+    private void puntos_anterior_max() {
+        String point = null;
+
+
+        try {
+            File myObj = new File(path_puntos + "puntos.txt");
+            Scanner myReader = new Scanner(myObj);
+
+
+
+
+            while (myReader.hasNextLine()) {
+                 point = myReader.nextLine();
+
+            }
+
+            while (true){
+                GLabel points_max = new GLabel(null);
+                points_max.setFont("Fixedsys Excelsior 3.01-30");
+                points_max.setLabel("Points_max : " + (point));
+                add(points_max, 350, 50);
+            }
+
+
+
+            myReader.close();
+        } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+        }
+
+    }
+
+
 
 }
+//fin run
+
+
+
+
+
 
 
 
