@@ -343,7 +343,7 @@ public class PointSound extends GraphicsProgram implements KeyListener {
 
             }
 
-            
+
                 GLabel points_max = new GLabel(null);
                 points_max.setFont("Fixedsys Excelsior 3.01-30");
                 points_max.setLabel("Points_max : " + (point));
